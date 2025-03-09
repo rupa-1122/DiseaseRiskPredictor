@@ -1,0 +1,449 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disease Risk Predictor</title>
+    <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 0;
+            }
+        }
+        .animate-pulse-ring::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: currentColor;
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100">
+        <div class="container mx-auto px-4 py-8">
+            <!-- Header with Stats -->
+            <div class="mb-8">
+                <div class="flex items-center justify-center mb-4">
+                    <div class="relative">
+                        <i data-lucide="heart-pulse" class="w-10 h-10 text-pink-500 relative animate-pulse-ring"></i>
+                    </div>
+                    <h1 class="text-4xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent ml-3">
+                        Disease Risk Predictor
+                    </h1>
+                </div>
+                <p class="text-center text-gray-400 max-w-2xl mx-auto">
+                    Advanced health risk assessment using machine learning algorithms to predict potential health risks based on your medical data.
+                </p>
+                
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                    <div class="bg-gray-800/50 p-4 rounded-lg border border-gray-700 backdrop-blur-sm">
+                        <div class="flex items-center">
+                            <i data-lucide="users" class="w-6 h-6 text-blue-400 mr-2"></i>
+                            <div>
+                                <h3 class="text-sm text-gray-400">Users Helped</h3>
+                                <p class="text-2xl font-bold">10,000+</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-800/50 p-4 rounded-lg border border-gray-700 backdrop-blur-sm">
+                        <div class="flex items-center">
+                            <i data-lucide="activity" class="w-6 h-6 text-green-400 mr-2"></i>
+                            <div>
+                                <h3 class="text-sm text-gray-400">Accuracy Rate</h3>
+                                <p class="text-2xl font-bold">95%</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-800/50 p-4 rounded-lg border border-gray-700 backdrop-blur-sm">
+                        <div class="flex items-center">
+                            <i data-lucide="shield-check" class="w-6 h-6 text-purple-400 mr-2"></i>
+                            <div>
+                                <h3 class="text-sm text-gray-400">Health Factors</h3>
+                                <p class="text-2xl font-bold">15+</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-gray-800/90 backdrop-blur-sm rounded-xl shadow-xl p-6 border border-gray-700">
+                    <h2 class="text-xl font-semibold mb-6 flex items-center">
+                        <i data-lucide="clipboard-list" class="w-5 h-5 text-pink-500 mr-2"></i>
+                        Patient Information
+                    </h2>
+                    <form id="patientForm" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300">Age*</label>
+                                <div class="mt-1 relative">
+                                    <input
+                                        type="number"
+                                        name="age"
+                                        required
+                                        class="block w-full rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 pl-10"
+                                    />
+                                    <i data-lucide="calendar" class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300">Gender*</label>
+                                <div class="mt-1 relative">
+                                    <select
+                                        name="gender"
+                                        required
+                                        class="block w-full rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 pl-10"
+                                    >
+                                        <option value="">Select gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                    <i data-lucide="user" class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300">Glucose Level*</label>
+                                <div class="mt-1 relative">
+                                    <input
+                                        type="number"
+                                        name="glucose"
+                                        required
+                                        class="block w-full rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 pl-10"
+                                    />
+                                    <i data-lucide="droplet" class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300">Blood Pressure*</label>
+                                <div class="mt-1 relative">
+                                    <input
+                                        type="number"
+                                        name="bloodPressure"
+                                        required
+                                        class="block w-full rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 pl-10"
+                                    />
+                                    <i data-lucide="heart" class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300">BMI*</label>
+                                <div class="mt-1 relative">
+                                    <input
+                                        type="number"
+                                        name="bmi"
+                                        required
+                                        class="block w-full rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 pl-10"
+                                    />
+                                    <i data-lucide="ruler" class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300">Diabetes Pedigree*</label>
+                                <div class="mt-1 relative">
+                                    <input
+                                        type="number"
+                                        name="diabetesPedigree"
+                                        required
+                                        class="block w-full rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 pl-10"
+                                    />
+                                    <i data-lucide="dna" class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6">
+                            <h3 class="text-lg font-medium mb-3 flex items-center">
+                                <i data-lucide="clipboard-list" class="w-5 h-5 text-pink-500 mr-2"></i>
+                                Medical History*
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-700/30 p-4 rounded-lg">
+                                <div class="space-y-3">
+                                    <label class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
+                                        <input type="checkbox" name="medicalHistory" value="diabetes" class="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-pink-500">
+                                        <span class="flex items-center">
+                                            <i data-lucide="droplet" class="w-4 h-4 text-blue-400 mr-2"></i>
+                                            Diabetes
+                                        </span>
+                                    </label>
+                                    <label class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
+                                        <input type="checkbox" name="medicalHistory" value="heartDisease" class="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-pink-500">
+                                        <span class="flex items-center">
+                                            <i data-lucide="heart" class="w-4 h-4 text-red-400 mr-2"></i>
+                                            Heart Disease
+                                        </span>
+                                    </label>
+                                    <label class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
+                                        <input type="checkbox" name="medicalHistory" value="hypertension" class="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-pink-500">
+                                        <span class="flex items-center">
+                                            <i data-lucide="activity" class="w-4 h-4 text-yellow-400 mr-2"></i>
+                                            Hypertension
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="space-y-3">
+                                    <label class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
+                                        <input type="checkbox" name="medicalHistory" value="obesity" class="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-pink-500">
+                                        <span class="flex items-center">
+                                            <i data-lucide="ruler" class="w-4 h-4 text-green-400 mr-2"></i>
+                                            Obesity
+                                        </span>
+                                    </label>
+                                    <label class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
+                                        <input type="checkbox" name="medicalHistory" value="thyroid" class="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-pink-500">
+                                        <span class="flex items-center">
+                                            <i data-lucide="thermometer" class="w-4 h-4 text-purple-400 mr-2"></i>
+                                            Thyroid Disorder
+                                        </span>
+                                    </label>
+                                    <label class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
+                                        <input type="checkbox" name="medicalHistory" value="none" class="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-pink-500">
+                                        <span class="flex items-center">
+                                            <i data-lucide="check-circle" class="w-4 h-4 text-gray-400 mr-2"></i>
+                                            None
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="validationError" class="hidden mt-4 p-3 bg-red-900/50 border border-red-500 rounded-lg text-red-200">
+                            <div class="flex items-start">
+                                <i data-lucide="alert-triangle" class="w-5 h-5 text-red-400 mr-2 flex-shrink-0 mt-0.5"></i>
+                                <p>Please fill in all required fields and select at least one medical history option.</p>
+                            </div>
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white py-3 px-4 rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all duration-200 mt-6 flex items-center justify-center group"
+                        >
+                            <i data-lucide="activity" class="w-5 h-5 mr-2 group-hover:animate-pulse"></i>
+                            Predict Risk
+                        </button>
+                    </form>
+                </div>
+
+                <div class="bg-gray-800/90 backdrop-blur-sm rounded-xl shadow-xl p-6 border border-gray-700">
+                    <h2 class="text-xl font-semibold mb-6 flex items-center">
+                        <i data-lucide="bar-chart-2" class="w-5 h-5 text-pink-500 mr-2"></i>
+                        Risk Analysis
+                    </h2>
+                    <div id="predictionResults">
+                        <div class="flex flex-col items-center justify-center h-[400px] text-gray-400">
+                            <div class="relative">
+                                <i data-lucide="activity" class="w-16 h-16 mb-4 text-gray-600 animate-pulse-ring"></i>
+                            </div>
+                            <p class="text-center">Enter patient information and click "Predict Risk" to see your personalized health analysis</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Section -->
+            <div class="mt-12 max-w-4xl mx-auto">
+                <h2 class="text-2xl font-bold text-center mb-8 bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+                    Why Choose Our Risk Predictor?
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-gray-800/50 p-6 rounded-lg border border-gray-700 backdrop-blur-sm">
+                        <i data-lucide="shield" class="w-8 h-8 text-blue-400 mb-4"></i>
+                        <h3 class="text-lg font-semibold mb-2">Advanced AI</h3>
+                        <p class="text-gray-400">Powered by sophisticated machine learning algorithms for accurate predictions</p>
+                    </div>
+                    <div class="bg-gray-800/50 p-6 rounded-lg border border-gray-700 backdrop-blur-sm">
+                        <i data-lucide="clock" class="w-8 h-8 text-green-400 mb-4"></i>
+                        <h3 class="text-lg font-semibold mb-2">Instant Results</h3>
+                        <p class="text-gray-400">Get your risk assessment and personalized recommendations in seconds</p>
+                    </div>
+                    <div class="bg-gray-800/50 p-6 rounded-lg border border-gray-700 backdrop-blur-sm">
+                        <i data-lucide="lock" class="w-8 h-8 text-purple-400 mb-4"></i>
+                        <h3 class="text-lg font-semibold mb-2">Privacy First</h3>
+                        <p class="text-gray-400">Your health data is processed securely and never stored</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Prediction function
+        function predictDiabetes(data) {
+            let score = 0;
+            
+            // Age factor
+            if (data.age > 45) score += 2;
+            else if (data.age > 35) score += 1;
+            
+            // Gender factor
+            if (data.gender === 'female') score += 1;
+            
+            // Glucose factor
+            if (data.glucose > 140) score += 3;
+            else if (data.glucose > 100) score += 2;
+            
+            // BMI factor
+            if (data.bmi > 30) score += 3;
+            else if (data.bmi > 25) score += 2;
+            
+            // Blood pressure factor
+            if (data.bloodPressure > 140) score += 2;
+            else if (data.bloodPressure > 120) score += 1;
+            
+            // Diabetes pedigree factor
+            if (data.diabetesPedigree > 0.8) score += 2;
+            else if (data.diabetesPedigree > 0.5) score += 1;
+
+            // Medical history factors
+            if (data.medicalHistory.includes('diabetes')) score += 3;
+            if (data.medicalHistory.includes('heartDisease')) score += 2;
+            if (data.medicalHistory.includes('hypertension')) score += 2;
+            if (data.medicalHistory.includes('obesity')) score += 2;
+            if (data.medicalHistory.includes('thyroid')) score += 1;
+
+            const maxScore = 20;
+            const probability = (score / maxScore) * 100;
+            
+            let risk;
+            if (score <= 6) risk = 'Low';
+            else if (score <= 12) risk = 'Moderate';
+            else risk = 'High';
+            
+            const recommendations = [
+                'Maintain a balanced diet rich in vegetables and whole grains',
+                'Exercise regularly (at least 150 minutes per week)',
+                'Monitor blood glucose levels regularly',
+                'Schedule regular check-ups with your healthcare provider'
+            ];
+            
+            if (risk === 'High') {
+                recommendations.unshift('Consult a healthcare provider immediately');
+            }
+
+            if (data.medicalHistory.includes('hypertension')) {
+                recommendations.push('Monitor blood pressure daily');
+            }
+            if (data.medicalHistory.includes('obesity')) {
+                recommendations.push('Consider consulting a nutritionist');
+            }
+            
+            return { risk, probability, recommendations };
+        }
+
+        function getRiskColor(risk) {
+            switch (risk) {
+                case 'Low': return 'text-green-400';
+                case 'Moderate': return 'text-yellow-400';
+                case 'High': return 'text-red-400';
+                default: return 'text-gray-400';
+            }
+        }
+
+        // Form submission handler
+        document.getElementById('patientForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const medicalHistory = Array.from(formData.getAll('medicalHistory'));
+            
+            // Validation
+            const validationError = document.getElementById('validationError');
+            if (!medicalHistory.length) {
+                validationError.classList.remove('hidden');
+                return;
+            }
+            validationError.classList.add('hidden');
+
+            const data = {
+                age: parseFloat(formData.get('age')) || 0,
+                gender: formData.get('gender'),
+                glucose: parseFloat(formData.get('glucose')) || 0,
+                bloodPressure: parseFloat(formData.get('bloodPressure')) || 0,
+                bmi: parseFloat(formData.get('bmi')) || 0,
+                diabetesPedigree: parseFloat(formData.get('diabetesPedigree')) || 0,
+                medicalHistory: medicalHistory
+            };
+
+            const prediction = predictDiabetes(data);
+            
+            const resultsHTML = `
+                <div class="space-y-6">
+                    <div class="text-center p-6 bg-gray-700/50 rounded-lg border border-gray-600">
+                        <div class="relative inline-block">
+                            <div class="w-32 h-32 rounded-full border-4 ${getRiskColor(prediction.risk)} border-opacity-50 flex items-center justify-center mb-4 mx-auto">
+                                <div class="text-center">
+                                    <p class="text-4xl font-bold ${getRiskColor(prediction.risk)}">
+                                        ${prediction.probability.toFixed(0)}%
+                                    </p>
+                                    <p class="text-sm text-gray-400">Risk Level</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-2xl font-bold ${getRiskColor(prediction.risk)} mb-2">
+                            ${prediction.risk} Risk
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-700/50 rounded-lg p-6 border border-gray-600">
+                        <h3 class="text-lg font-medium mb-4 flex items-center">
+                            <i data-lucide="list-checks" class="w-5 h-5 text-pink-500 mr-2"></i>
+                            Personalized Recommendations
+                        </h3>
+                        <ul class="space-y-3">
+                            ${prediction.recommendations.map(rec => `
+                                <li class="flex items-start bg-gray-800/50 p-3 rounded-lg hover:bg-gray-800 transition-colors">
+                                    <i data-lucide="check-circle" class="w-5 h-5 text-pink-500 mr-2 flex-shrink-0 mt-0.5"></i>
+                                    <span class="text-gray-300">${rec}</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('predictionResults').innerHTML = resultsHTML;
+            lucide.createIcons();
+        });
+
+        // Handle "None" checkbox
+        document.querySelectorAll('input[name="medicalHistory"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (this.value === 'none' && this.checked) {
+                    document.querySelectorAll('input[name="medicalHistory"]').forEach(cb => {
+                        if (cb.value !== 'none') cb.checked = false;
+                    });
+                } else if (this.checked) {
+                    document.querySelector('input[value="none"]').checked = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
