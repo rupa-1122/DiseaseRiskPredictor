@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Disease Risk Predictor</title>
+    <title>Disease Risk Predictor with Authentication</title>
     <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -39,251 +38,542 @@
             animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
             z-index: -1;
         }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
     <div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100">
-        <div class="container mx-auto px-4 py-8">
-            <!-- Header with Stats -->
-            <div class="mb-8">
-                <div class="flex items-center justify-center mb-4">
-                    <div class="relative">
-                        <i data-lucide="heart-pulse" class="w-10 h-10 text-pink-500 relative animate-pulse-ring"></i>
+        
+        <!-- Navigation (only shown when logged in) -->
+        <nav id="navigation" class="bg-gray-800/50 backdrop-blur-sm border-b border-gray-700 hidden">
+            <div class="container mx-auto px-4 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2 cursor-pointer" onclick="showPage('dashboard')">
+                        <i data-lucide="heart-pulse" class="w-8 h-8 text-pink-500"></i>
+                        <span class="text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+                            Disease Risk Predictor
+                        </span>
                     </div>
-                    <h1 class="text-4xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent ml-3">
-                        Disease Risk Predictor
-                    </h1>
-                </div>
-                <p class="text-center text-gray-400 max-w-2xl mx-auto">
-                    Advanced health risk assessment using machine learning algorithms to predict potential health risks based on your medical data.
-                </p>
-                
-                <!-- Stats Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-                    <div class="bg-gray-800/50 p-4 rounded-lg border border-gray-700 backdrop-blur-sm">
-                        <div class="flex items-center">
-                            <i data-lucide="users" class="w-6 h-6 text-blue-400 mr-2"></i>
-                            <div>
-                                <h3 class="text-sm text-gray-400">Users Helped</h3>
-                                <p class="text-2xl font-bold">10,000+</p>
-                            </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2 text-gray-300">
+                            <i data-lucide="user" class="w-5 h-5"></i>
+                            <span id="userName"></span>
                         </div>
-                    </div>
-                    <div class="bg-gray-800/50 p-4 rounded-lg border border-gray-700 backdrop-blur-sm">
-                        <div class="flex items-center">
-                            <i data-lucide="activity" class="w-6 h-6 text-green-400 mr-2"></i>
-                            <div>
-                                <h3 class="text-sm text-gray-400">Accuracy Rate</h3>
-                                <p class="text-2xl font-bold">95%</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-gray-800/50 p-4 rounded-lg border border-gray-700 backdrop-blur-sm">
-                        <div class="flex items-center">
-                            <i data-lucide="shield-check" class="w-6 h-6 text-purple-400 mr-2"></i>
-                            <div>
-                                <h3 class="text-sm text-gray-400">Health Factors</h3>
-                                <p class="text-2xl font-bold">15+</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-gray-800/90 backdrop-blur-sm rounded-xl shadow-xl p-6 border border-gray-700">
-                    <h2 class="text-xl font-semibold mb-6 flex items-center">
-                        <i data-lucide="clipboard-list" class="w-5 h-5 text-pink-500 mr-2"></i>
-                        Patient Information
-                    </h2>
-                    <form id="patientForm" class="space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-300">Age*</label>
-                                <div class="mt-1 relative">
-                                    <input
-                                        type="number"
-                                        name="age"
-                                        required
-                                        class="block w-full rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 pl-10"
-                                    />
-                                    <i data-lucide="calendar" class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-300">Gender*</label>
-                                <div class="mt-1 relative">
-                                    <select
-                                        name="gender"
-                                        required
-                                        class="block w-full rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 pl-10"
-                                    >
-                                        <option value="">Select gender</option>
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                    <i data-lucide="user" class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-300">Glucose Level*</label>
-                                <div class="mt-1 relative">
-                                    <input
-                                        type="number"
-                                        name="glucose"
-                                        required
-                                        class="block w-full rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 pl-10"
-                                    />
-                                    <i data-lucide="droplet" class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-300">Blood Pressure*</label>
-                                <div class="mt-1 relative">
-                                    <input
-                                        type="number"
-                                        name="bloodPressure"
-                                        required
-                                        class="block w-full rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 pl-10"
-                                    />
-                                    <i data-lucide="heart" class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-300">BMI*</label>
-                                <div class="mt-1 relative">
-                                    <input
-                                        type="number"
-                                        name="bmi"
-                                        required
-                                        class="block w-full rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 pl-10"
-                                    />
-                                    <i data-lucide="ruler" class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-300">Diabetes Pedigree*</label>
-                                <div class="mt-1 relative">
-                                    <input
-                                        type="number"
-                                        name="diabetesPedigree"
-                                        required
-                                        class="block w-full rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 pl-10"
-                                    />
-                                    <i data-lucide="dna" class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mt-6">
-                            <h3 class="text-lg font-medium mb-3 flex items-center">
-                                <i data-lucide="clipboard-list" class="w-5 h-5 text-pink-500 mr-2"></i>
-                                Medical History*
-                            </h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-700/30 p-4 rounded-lg">
-                                <div class="space-y-3">
-                                    <label class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
-                                        <input type="checkbox" name="medicalHistory" value="diabetes" class="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-pink-500">
-                                        <span class="flex items-center">
-                                            <i data-lucide="droplet" class="w-4 h-4 text-blue-400 mr-2"></i>
-                                            Diabetes
-                                        </span>
-                                    </label>
-                                    <label class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
-                                        <input type="checkbox" name="medicalHistory" value="heartDisease" class="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-pink-500">
-                                        <span class="flex items-center">
-                                            <i data-lucide="heart" class="w-4 h-4 text-red-400 mr-2"></i>
-                                            Heart Disease
-                                        </span>
-                                    </label>
-                                    <label class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
-                                        <input type="checkbox" name="medicalHistory" value="hypertension" class="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-pink-500">
-                                        <span class="flex items-center">
-                                            <i data-lucide="activity" class="w-4 h-4 text-yellow-400 mr-2"></i>
-                                            Hypertension
-                                        </span>
-                                    </label>
-                                </div>
-                                <div class="space-y-3">
-                                    <label class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
-                                        <input type="checkbox" name="medicalHistory" value="obesity" class="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-pink-500">
-                                        <span class="flex items-center">
-                                            <i data-lucide="ruler" class="w-4 h-4 text-green-400 mr-2"></i>
-                                            Obesity
-                                        </span>
-                                    </label>
-                                    <label class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
-                                        <input type="checkbox" name="medicalHistory" value="thyroid" class="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-pink-500">
-                                        <span class="flex items-center">
-                                            <i data-lucide="thermometer" class="w-4 h-4 text-purple-400 mr-2"></i>
-                                            Thyroid Disorder
-                                        </span>
-                                    </label>
-                                    <label class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
-                                        <input type="checkbox" name="medicalHistory" value="none" class="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-pink-500">
-                                        <span class="flex items-center">
-                                            <i data-lucide="check-circle" class="w-4 h-4 text-gray-400 mr-2"></i>
-                                            None
-                                        </span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="validationError" class="hidden mt-4 p-3 bg-red-900/50 border border-red-500 rounded-lg text-red-200">
-                            <div class="flex items-start">
-                                <i data-lucide="alert-triangle" class="w-5 h-5 text-red-400 mr-2 flex-shrink-0 mt-0.5"></i>
-                                <p>Please fill in all required fields and select at least one medical history option.</p>
-                            </div>
-                        </div>
-
                         <button
-                            type="submit"
-                            class="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white py-3 px-4 rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all duration-200 mt-6 flex items-center justify-center group"
+                            onclick="logout()"
+                            class="flex items-center space-x-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
                         >
-                            <i data-lucide="activity" class="w-5 h-5 mr-2 group-hover:animate-pulse"></i>
-                            Predict Risk
+                            <i data-lucide="log-out" class="w-4 h-4"></i>
+                            <span>Logout</span>
                         </button>
-                    </form>
-                </div>
-
-                <div class="bg-gray-800/90 backdrop-blur-sm rounded-xl shadow-xl p-6 border border-gray-700">
-                    <h2 class="text-xl font-semibold mb-6 flex items-center">
-                        <i data-lucide="bar-chart-2" class="w-5 h-5 text-pink-500 mr-2"></i>
-                        Risk Analysis
-                    </h2>
-                    <div id="predictionResults">
-                        <div class="flex flex-col items-center justify-center h-[400px] text-gray-400">
-                            <div class="relative">
-                                <i data-lucide="activity" class="w-16 h-16 mb-4 text-gray-600 animate-pulse-ring"></i>
-                            </div>
-                            <p class="text-center">Enter patient information and click "Predict Risk" to see your personalized health analysis</p>
-                        </div>
                     </div>
                 </div>
             </div>
+        </nav>
 
-            <!-- Features Section -->
-            <div class="mt-12 max-w-4xl mx-auto">
-                <h2 class="text-2xl font-bold text-center mb-8 bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
-                    Why Choose Our Risk Predictor?
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-gray-800/50 p-6 rounded-lg border border-gray-700 backdrop-blur-sm">
-                        <i data-lucide="shield" class="w-8 h-8 text-blue-400 mb-4"></i>
-                        <h3 class="text-lg font-semibold mb-2">Advanced AI</h3>
-                        <p class="text-gray-400">Powered by sophisticated machine learning algorithms for accurate predictions</p>
+        <!-- Login Page -->
+        <div id="loginPage" class="page active">
+            <div class="min-h-screen flex items-center justify-center px-4">
+                <div class="max-w-md w-full fade-in">
+                    <!-- Header -->
+                    <div class="text-center mb-8">
+                        <div class="flex items-center justify-center mb-4">
+                            <div class="relative">
+                                <i data-lucide="heart-pulse" class="w-12 h-12 text-pink-500 animate-pulse"></i>
+                            </div>
+                        </div>
+                        <h1 class="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+                            Welcome Back
+                        </h1>
+                        <p class="text-gray-400 mt-2">Sign in to access your health dashboard</p>
                     </div>
-                    <div class="bg-gray-800/50 p-6 rounded-lg border border-gray-700 backdrop-blur-sm">
-                        <i data-lucide="clock" class="w-8 h-8 text-green-400 mb-4"></i>
-                        <h3 class="text-lg font-semibold mb-2">Instant Results</h3>
-                        <p class="text-gray-400">Get your risk assessment and personalized recommendations in seconds</p>
+
+                    <!-- Login Form -->
+                    <div class="bg-gray-800/90 backdrop-blur-sm rounded-xl shadow-xl p-8 border border-gray-700">
+                        <form id="loginForm" class="space-y-6">
+                            <!-- Email Field -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">
+                                    Email Address
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="email"
+                                        id="loginEmail"
+                                        required
+                                        class="block w-full pl-12 pr-4 py-3 rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 transition-colors"
+                                        placeholder="Enter your email"
+                                    />
+                                    <i data-lucide="mail" class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2"></i>
+                                </div>
+                            </div>
+
+                            <!-- Password Field -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">
+                                    Password
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="password"
+                                        id="loginPassword"
+                                        required
+                                        class="block w-full pl-12 pr-12 py-3 rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 transition-colors"
+                                        placeholder="Enter your password"
+                                    />
+                                    <i data-lucide="lock" class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2"></i>
+                                    <button
+                                        type="button"
+                                        onclick="togglePassword('loginPassword', this)"
+                                        class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
+                                    >
+                                        <i data-lucide="eye" class="w-5 h-5"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Error Message -->
+                            <div id="loginError" class="hidden p-3 bg-red-900/50 border border-red-500 rounded-lg text-red-200 text-sm">
+                                <div class="flex items-start">
+                                    <i data-lucide="alert-triangle" class="w-5 h-5 text-red-400 mr-2 flex-shrink-0 mt-0.5"></i>
+                                    <span id="loginErrorText"></span>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button
+                                type="submit"
+                                id="loginButton"
+                                class="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white py-3 px-4 rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all duration-200 flex items-center justify-center group"
+                            >
+                                <i data-lucide="heart-pulse" class="w-5 h-5 mr-2 group-hover:animate-pulse"></i>
+                                Sign In
+                            </button>
+                        </form>
+
+                        <!-- Footer -->
+                        <div class="mt-6 text-center">
+                            <p class="text-gray-400">
+                                Don't have an account?
+                                <button
+                                    onclick="showPage('register')"
+                                    class="text-pink-500 hover:text-pink-400 font-medium transition-colors ml-1"
+                                >
+                                    Sign up
+                                </button>
+                            </p>
+                        </div>
                     </div>
-                    <div class="bg-gray-800/50 p-6 rounded-lg border border-gray-700 backdrop-blur-sm">
-                        <i data-lucide="lock" class="w-8 h-8 text-purple-400 mb-4"></i>
-                        <h3 class="text-lg font-semibold mb-2">Privacy First</h3>
-                        <p class="text-gray-400">Your health data is processed securely and never stored</p>
+
+                    <!-- Demo Info -->
+                    <div class="mt-6 text-center text-sm text-gray-500">
+                        <p>Demo: Use any email and password (6+ characters)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Register Page -->
+        <div id="registerPage" class="page">
+            <div class="min-h-screen flex items-center justify-center px-4 py-8">
+                <div class="max-w-md w-full fade-in">
+                    <!-- Header -->
+                    <div class="text-center mb-8">
+                        <div class="flex items-center justify-center mb-4">
+                            <div class="relative">
+                                <i data-lucide="heart-pulse" class="w-12 h-12 text-pink-500 animate-pulse"></i>
+                            </div>
+                        </div>
+                        <h1 class="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+                            Create Account
+                        </h1>
+                        <p class="text-gray-400 mt-2">Join us to start monitoring your health</p>
+                    </div>
+
+                    <!-- Register Form -->
+                    <div class="bg-gray-800/90 backdrop-blur-sm rounded-xl shadow-xl p-8 border border-gray-700">
+                        <form id="registerForm" class="space-y-6">
+                            <!-- Name Field -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">
+                                    Full Name
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="text"
+                                        id="registerName"
+                                        required
+                                        class="block w-full pl-12 pr-4 py-3 rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 transition-colors"
+                                        placeholder="Enter your full name"
+                                    />
+                                    <i data-lucide="user" class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2"></i>
+                                </div>
+                            </div>
+
+                            <!-- Email Field -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">
+                                    Email Address
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="email"
+                                        id="registerEmail"
+                                        required
+                                        class="block w-full pl-12 pr-4 py-3 rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 transition-colors"
+                                        placeholder="Enter your email"
+                                    />
+                                    <i data-lucide="mail" class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2"></i>
+                                </div>
+                            </div>
+
+                            <!-- Password Field -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">
+                                    Password
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="password"
+                                        id="registerPassword"
+                                        required
+                                        class="block w-full pl-12 pr-12 py-3 rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 transition-colors"
+                                        placeholder="Create a password"
+                                    />
+                                    <i data-lucide="lock" class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2"></i>
+                                    <button
+                                        type="button"
+                                        onclick="togglePassword('registerPassword', this)"
+                                        class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
+                                    >
+                                        <i data-lucide="eye" class="w-5 h-5"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Confirm Password Field -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">
+                                    Confirm Password
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="password"
+                                        id="confirmPassword"
+                                        required
+                                        class="block w-full pl-12 pr-12 py-3 rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 transition-colors"
+                                        placeholder="Confirm your password"
+                                    />
+                                    <i data-lucide="lock" class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2"></i>
+                                    <button
+                                        type="button"
+                                        onclick="togglePassword('confirmPassword', this)"
+                                        class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
+                                    >
+                                        <i data-lucide="eye" class="w-5 h-5"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Error Message -->
+                            <div id="registerError" class="hidden p-3 bg-red-900/50 border border-red-500 rounded-lg text-red-200 text-sm">
+                                <div class="flex items-start">
+                                    <i data-lucide="alert-triangle" class="w-5 h-5 text-red-400 mr-2 flex-shrink-0 mt-0.5"></i>
+                                    <span id="registerErrorText"></span>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button
+                                type="submit"
+                                id="registerButton"
+                                class="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white py-3 px-4 rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all duration-200 flex items-center justify-center group"
+                            >
+                                <i data-lucide="heart-pulse" class="w-5 h-5 mr-2 group-hover:animate-pulse"></i>
+                                Create Account
+                            </button>
+                        </form>
+
+                        <!-- Footer -->
+                        <div class="mt-6 text-center">
+                            <p class="text-gray-400">
+                                Already have an account?
+                                <button
+                                    onclick="showPage('login')"
+                                    class="text-pink-500 hover:text-pink-400 font-medium transition-colors ml-1"
+                                >
+                                    Sign in
+                                </button>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Demo Info -->
+                    <div class="mt-6 text-center text-sm text-gray-500">
+                        <p>Demo: All fields are required, password must be 6+ characters</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Page -->
+        <div id="dashboardPage" class="page">
+            <div class="container mx-auto px-4 py-8 fade-in">
+                <!-- Header with Stats -->
+                <div class="mb-8">
+                    <div class="flex items-center justify-center mb-4">
+                        <div class="relative">
+                            <i data-lucide="heart-pulse" class="w-10 h-10 text-pink-500 animate-pulse-ring"></i>
+                        </div>
+                        <h1 class="text-4xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent ml-3">
+                            Disease Risk Predictor
+                        </h1>
+                    </div>
+                    <p class="text-center text-gray-400 max-w-2xl mx-auto">
+                        Advanced health risk assessment using machine learning algorithms to predict potential health risks based on your medical data.
+                    </p>
+                    
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                        <div class="bg-gray-800/50 p-4 rounded-lg border border-gray-700 backdrop-blur-sm">
+                            <div class="flex items-center">
+                                <i data-lucide="users" class="w-6 h-6 text-blue-400 mr-2"></i>
+                                <div>
+                                    <h3 class="text-sm text-gray-400">Users Helped</h3>
+                                    <p class="text-2xl font-bold">10,000+</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-800/50 p-4 rounded-lg border border-gray-700 backdrop-blur-sm">
+                            <div class="flex items-center">
+                                <i data-lucide="activity" class="w-6 h-6 text-green-400 mr-2"></i>
+                                <div>
+                                    <h3 class="text-sm text-gray-400">Accuracy Rate</h3>
+                                    <p class="text-2xl font-bold">95%</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-800/50 p-4 rounded-lg border border-gray-700 backdrop-blur-sm">
+                            <div class="flex items-center">
+                                <i data-lucide="shield-check" class="w-6 h-6 text-purple-400 mr-2"></i>
+                                <div>
+                                    <h3 class="text-sm text-gray-400">Health Factors</h3>
+                                    <p class="text-2xl font-bold">15+</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-gray-800/90 backdrop-blur-sm rounded-xl shadow-xl p-6 border border-gray-700">
+                        <h2 class="text-xl font-semibold mb-6 flex items-center">
+                            <i data-lucide="clipboard-list" class="w-5 h-5 text-pink-500 mr-2"></i>
+                            Patient Information
+                        </h2>
+                        <form id="patientForm" class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300">Age*</label>
+                                    <div class="mt-1 relative">
+                                        <input
+                                            type="number"
+                                            name="age"
+                                            required
+                                            class="block w-full rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 pl-10 py-3"
+                                        />
+                                        <i data-lucide="calendar" class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300">Gender*</label>
+                                    <div class="mt-1 relative">
+                                        <select
+                                            name="gender"
+                                            required
+                                            class="block w-full rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 pl-10 py-3"
+                                        >
+                                            <option value="">Select gender</option>
+                                            <option value="male">Male</option>
+                                            <option value="female">Female</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                        <i data-lucide="user" class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300">Glucose Level*</label>
+                                    <div class="mt-1 relative">
+                                        <input
+                                            type="number"
+                                            name="glucose"
+                                            required
+                                            class="block w-full rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 pl-10 py-3"
+                                        />
+                                        <i data-lucide="droplet" class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300">Blood Pressure*</label>
+                                    <div class="mt-1 relative">
+                                        <input
+                                            type="number"
+                                            name="bloodPressure"
+                                            required
+                                            class="block w-full rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 pl-10 py-3"
+                                        />
+                                        <i data-lucide="heart" class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300">BMI*</label>
+                                    <div class="mt-1 relative">
+                                        <input
+                                            type="number"
+                                            name="bmi"
+                                            required
+                                            class="block w-full rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 pl-10 py-3"
+                                        />
+                                        <i data-lucide="ruler" class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300">Diabetes Pedigree*</label>
+                                    <div class="mt-1 relative">
+                                        <input
+                                            type="number"
+                                            name="diabetesPedigree"
+                                            required
+                                            step="0.01"
+                                            class="block w-full rounded-lg bg-gray-700/50 border-gray-600 text-white focus:border-pink-500 focus:ring-pink-500 pl-10 py-3"
+                                        />
+                                        <i data-lucide="dna" class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-6">
+                                <h3 class="text-lg font-medium mb-3 flex items-center">
+                                    <i data-lucide="clipboard-list" class="w-5 h-5 text-pink-500 mr-2"></i>
+                                    Medical History*
+                                </h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-700/30 p-4 rounded-lg">
+                                    <div class="space-y-3">
+                                        <label class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
+                                            <input type="checkbox" name="medicalHistory" value="diabetes" class="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-pink-500">
+                                            <span class="flex items-center">
+                                                <i data-lucide="droplet" class="w-4 h-4 text-blue-400 mr-2"></i>
+                                                Diabetes
+                                            </span>
+                                        </label>
+                                        <label class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
+                                            <input type="checkbox" name="medicalHistory" value="heartDisease" class="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-pink-500">
+                                            <span class="flex items-center">
+                                                <i data-lucide="heart" class="w-4 h-4 text-red-400 mr-2"></i>
+                                                Heart Disease
+                                            </span>
+                                        </label>
+                                        <label class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
+                                            <input type="checkbox" name="medicalHistory" value="hypertension" class="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-pink-500">
+                                            <span class="flex items-center">
+                                                <i data-lucide="activity" class="w-4 h-4 text-yellow-400 mr-2"></i>
+                                                Hypertension
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="space-y-3">
+                                        <label class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
+                                            <input type="checkbox" name="medicalHistory" value="obesity" class="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-pink-500">
+                                            <span class="flex items-center">
+                                                <i data-lucide="ruler" class="w-4 h-4 text-green-400 mr-2"></i>
+                                                Obesity
+                                            </span>
+                                        </label>
+                                        <label class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
+                                            <input type="checkbox" name="medicalHistory" value="thyroid" class="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-pink-500">
+                                            <span class="flex items-center">
+                                                <i data-lucide="thermometer" class="w-4 h-4 text-purple-400 mr-2"></i>
+                                                Thyroid Disorder
+                                            </span>
+                                        </label>
+                                        <label class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
+                                            <input type="checkbox" name="medicalHistory" value="none" class="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-pink-500">
+                                            <span class="flex items-center">
+                                                <i data-lucide="check-circle" class="w-4 h-4 text-gray-400 mr-2"></i>
+                                                None
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="validationError" class="hidden mt-4 p-3 bg-red-900/50 border border-red-500 rounded-lg text-red-200">
+                                <div class="flex items-start">
+                                    <i data-lucide="alert-triangle" class="w-5 h-5 text-red-400 mr-2 flex-shrink-0 mt-0.5"></i>
+                                    <p>Please fill in all required fields and select at least one medical history option.</p>
+                                </div>
+                            </div>
+
+                            <button
+                                type="submit"
+                                class="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white py-3 px-4 rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all duration-200 mt-6 flex items-center justify-center group"
+                            >
+                                <i data-lucide="activity" class="w-5 h-5 mr-2 group-hover:animate-pulse"></i>
+                                Predict Risk
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="bg-gray-800/90 backdrop-blur-sm rounded-xl shadow-xl p-6 border border-gray-700">
+                        <h2 class="text-xl font-semibold mb-6 flex items-center">
+                            <i data-lucide="bar-chart-2" class="w-5 h-5 text-pink-500 mr-2"></i>
+                            Risk Analysis
+                        </h2>
+                        <div id="predictionResults">
+                            <div class="flex flex-col items-center justify-center h-[400px] text-gray-400">
+                                <div class="relative">
+                                    <i data-lucide="activity" class="w-16 h-16 mb-4 text-gray-600 animate-pulse-ring"></i>
+                                </div>
+                                <p class="text-center">Enter patient information and click "Predict Risk" to see your personalized health analysis</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Features Section -->
+                <div class="mt-12 max-w-4xl mx-auto">
+                    <h2 class="text-2xl font-bold text-center mb-8 bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+                        Why Choose Our Risk Predictor?
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-gray-800/50 p-6 rounded-lg border border-gray-700 backdrop-blur-sm">
+                            <i data-lucide="shield" class="w-8 h-8 text-blue-400 mb-4"></i>
+                            <h3 class="text-lg font-semibold mb-2">Advanced AI</h3>
+                            <p class="text-gray-400">Powered by sophisticated machine learning algorithms for accurate predictions</p>
+                        </div>
+                        <div class="bg-gray-800/50 p-6 rounded-lg border border-gray-700 backdrop-blur-sm">
+                            <i data-lucide="clock" class="w-8 h-8 text-green-400 mb-4"></i>
+                            <h3 class="text-lg font-semibold mb-2">Instant Results</h3>
+                            <p class="text-gray-400">Get your risk assessment and personalized recommendations in seconds</p>
+                        </div>
+                        <div class="bg-gray-800/50 p-6 rounded-lg border border-gray-700 backdrop-blur-sm">
+                            <i data-lucide="lock" class="w-8 h-8 text-purple-400 mb-4"></i>
+                            <h3 class="text-lg font-semibold mb-2">Privacy First</h3>
+                            <p class="text-gray-400">Your health data is processed securely and never stored</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -293,6 +583,155 @@
     <script>
         // Initialize Lucide icons
         lucide.createIcons();
+
+        // Authentication state
+        let currentUser = null;
+
+        // Check if user is already logged in
+        function checkAuth() {
+            const user = localStorage.getItem('currentUser');
+            if (user) {
+                currentUser = JSON.parse(user);
+                document.getElementById('userName').textContent = currentUser.name;
+                document.getElementById('navigation').classList.remove('hidden');
+                showPage('dashboard');
+            } else {
+                showPage('login');
+            }
+        }
+
+        // Show specific page
+        function showPage(pageName) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show requested page
+            const targetPage = document.getElementById(pageName + 'Page');
+            if (targetPage) {
+                targetPage.classList.add('active');
+                // Re-initialize icons for the new page
+                setTimeout(() => lucide.createIcons(), 100);
+            }
+        }
+
+        // Toggle password visibility
+        function togglePassword(inputId, button) {
+            const input = document.getElementById(inputId);
+            const icon = button.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                input.type = 'password';
+                icon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons();
+        }
+
+        // Show error message
+        function showError(errorId, textId, message) {
+            document.getElementById(errorId).classList.remove('hidden');
+            document.getElementById(textId).textContent = message;
+        }
+
+        // Hide error message
+        function hideError(errorId) {
+            document.getElementById(errorId).classList.add('hidden');
+        }
+
+        // Login form handler
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            hideError('loginError');
+            
+            // Simple validation for demo
+            if (email && password.length >= 6) {
+                const userData = {
+                    id: '1',
+                    name: email.split('@')[0],
+                    email: email
+                };
+                
+                currentUser = userData;
+                localStorage.setItem('currentUser', JSON.stringify(userData));
+                document.getElementById('userName').textContent = userData.name;
+                document.getElementById('navigation').classList.remove('hidden');
+                showPage('dashboard');
+            } else {
+                showError('loginError', 'loginErrorText', 'Invalid email or password. Please try again.');
+            }
+        });
+
+        // Register form handler
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            hideError('registerError');
+            
+            // Validation
+            if (password !== confirmPassword) {
+                showError('registerError', 'registerErrorText', 'Passwords do not match');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showError('registerError', 'registerErrorText', 'Password must be at least 6 characters long');
+                return;
+            }
+            
+            if (name && email && password.length >= 6) {
+                const userData = {
+                    id: '1',
+                    name: name,
+                    email: email
+                };
+                
+                currentUser = userData;
+                localStorage.setItem('currentUser', JSON.stringify(userData));
+                document.getElementById('userName').textContent = userData.name;
+                document.getElementById('navigation').classList.remove('hidden');
+                showPage('dashboard');
+            } else {
+                showError('registerError', 'registerErrorText', 'Registration failed. Please try again.');
+            }
+        });
+
+        // Logout function
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            document.getElementById('navigation').classList.add('hidden');
+            showPage('login');
+            
+            // Clear forms
+            document.getElementById('loginForm').reset();
+            document.getElementById('registerForm').reset();
+            document.getElementById('patientForm').reset();
+            
+            // Clear prediction results
+            document.getElementById('predictionResults').innerHTML = `
+                <div class="flex flex-col items-center justify-center h-[400px] text-gray-400">
+                    <div class="relative">
+                        <i data-lucide="activity" class="w-16 h-16 mb-4 text-gray-600 animate-pulse-ring"></i>
+                    </div>
+                    <p class="text-center">Enter patient information and click "Predict Risk" to see your personalized health analysis</p>
+                </div>
+            `;
+            
+            lucide.createIcons();
+        }
 
         // Prediction function
         function predictDiabetes(data) {
@@ -366,7 +805,7 @@
             }
         }
 
-        // Form submission handler
+        // Form submission handler for patient form
         document.getElementById('patientForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -444,6 +883,9 @@
                 }
             });
         });
+
+        // Initialize the app
+        checkAuth();
     </script>
 </body>
 </html>
