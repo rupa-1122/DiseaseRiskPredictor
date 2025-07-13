@@ -71,6 +71,6 @@ Smoking history, etc.
 🌟 Star this repo if it helped you!
 
 ## 📬 Contact
-GitHub: @rupa-1122
+GitHub: [@rupa-1122](https://github.com/rupa-1122/)
 
-LinkedIn: Rupa Padala
+LinkedIn: [Rupa Padala](https://www.linkedin.com/in/rupapadala1122/)
