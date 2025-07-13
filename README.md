@@ -32,7 +32,7 @@ This project uses a trained model on health-related data to predict disease risk
 
 | Dashboard | Input Form |
 |-----------|------------|
-| ![Screenshot 1]((https://raw.githubusercontent.com/rupa-1122/DiseaseRiskPredictor/refs/heads/main/1.png)) | ![Screenshot 2](https://raw.githubusercontent.com/rupa-1122/DiseaseRiskPredictor/refs/heads/main/2.png) |
+| ![Screenshot 1]((https://raw.githubusercontent.com/rupa-1122/DiseaseRiskPredictor/refs/heads/main/3.png)) | ![Screenshot 2](https://raw.githubusercontent.com/rupa-1122/DiseaseRiskPredictor/refs/heads/main/2.png) |
 
 ---
 
